@@ -1,0 +1,54 @@
+***************requirement*******************
+we need 3 server
+1 load balancing with nginx installed
+2  web servers
+
+in this case the 3 server are going to use nginx one as a loadbalancing and the others as a web server 
+
+all these server SHOULD be at the same red area 
+
+#step one , install nginx on the 3 server with the following command:
+
+    sudo apt-get install nginx
+
+#step two, check if the service the status 
+
+    systemctl status nginx
+
+if the server is active great!! if not run the following command:
+
+    sudo systemctl start nginx
+
+#step treet , now at the loadbalancing server, go to next directory:
+
+   cd /etc/nginx/conf.d
+
+#step four edit the default.conf file with the editor of your preference and write down the following command (in my case  I use nano editor):
+
+  
+upstream backend  {
+  server  10.0.10.3;
+  server  10.0.10.4;
+ 
+}
+
+ server {
+  location / {
+    proxy_pass  http://backend;
+  }
+}
+
+#step five do a force-reload to the nginx  load balancing server :
+
+  sudo service nginx force-reload
+
+# step six check the status of the server using :
+
+    systemctl status nginx
+
+#step seven check if the load balancing is working:
+	curl localhost
+
+the website should change between servers
+
+
